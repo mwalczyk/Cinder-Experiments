@@ -1,0 +1,4 @@
+﻿  EasingApp.cpp
+  Unknown compiler version - please run the configure tests and report the results
+c:\users\michael.walczyk\desktop\cinder\apps\easing\src\easingapp.cpp(24): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  Easing.vcxproj -> C:\Users\michael.walczyk\Desktop\Cinder\apps\Easing\vc2013\Debug\Easing.exe

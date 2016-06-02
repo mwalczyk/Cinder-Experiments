@@ -1,0 +1,4 @@
+﻿  CollisionsApp.cpp
+  Unknown compiler version - please run the configure tests and report the results
+c:\users\michael.walczyk\desktop\cinder\apps\collisions\src\collisionsapp.cpp(128): warning C4244: 'argument': conversion from 'double' to 'float32', possible loss of data
+  Collisions.vcxproj -> C:\Users\michael.walczyk\Desktop\Cinder\apps\Collisions\vc2013\Debug\Collisions.exe

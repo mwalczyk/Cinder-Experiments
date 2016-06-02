@@ -1,0 +1,5 @@
+﻿  InstancedSpheresApp.cpp
+  Unknown compiler version - please run the configure tests and report the results
+c:\users\michael.walczyk\desktop\cinder\apps\instancedspheres\src\instancedspheresapp.cpp(62): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+c:\users\michael.walczyk\desktop\cinder\apps\instancedspheres\src\instancedspheresapp.cpp(63): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  InstancedSpheres.vcxproj -> C:\Users\michael.walczyk\Desktop\Cinder\apps\InstancedSpheres\vc2013\Debug\InstancedSpheres.exe

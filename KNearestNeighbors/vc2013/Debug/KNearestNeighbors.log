@@ -1,0 +1,33 @@
+﻿  KNearestNeighborsApp.cpp
+  Unknown compiler version - please run the configure tests and report the results
+c:\users\michael.walczyk\desktop\cinder\apps\knearestneighbors\include\knnclassifier.h(64): error C2678: binary '[': no operator found which takes a left-hand operand of type 'const std::map<ClassT,cinder::Color,std::less<_Kty>,std::allocator<std::pair<const _Kty,_Ty>>>' (or there is no acceptable conversion)
+          with
+          [
+              ClassT=char,
+              _Kty=char,
+              _Ty=cinder::Color
+          ]
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\map(339): note: could be 'cinder::ColorT<float> &std::map<ClassT,cinder::Color,std::less<_Kty>,std::allocator<std::pair<const _Kty,_Ty>>>::operator [](const char &)'
+          with
+          [
+              ClassT=char,
+              _Kty=char,
+              _Ty=cinder::Color
+          ]
+  c:\program files (x86)\microsoft visual studio 14.0\vc\include\map(179): note: or       'cinder::ColorT<float> &std::map<ClassT,cinder::Color,std::less<_Kty>,std::allocator<std::pair<const _Kty,_Ty>>>::operator [](char &&)'
+          with
+          [
+              ClassT=char,
+              _Kty=char,
+              _Ty=cinder::Color
+          ]
+  c:\users\michael.walczyk\desktop\cinder\apps\knearestneighbors\include\knnclassifier.h(64): note: while trying to match the argument list '(const std::map<ClassT,cinder::Color,std::less<_Kty>,std::allocator<std::pair<const _Kty,_Ty>>>, const char)'
+          with
+          [
+              ClassT=char,
+              _Kty=char,
+              _Ty=cinder::Color
+          ]
+  c:\users\michael.walczyk\desktop\cinder\apps\knearestneighbors\include\knnclassifier.h(57): note: while compiling class template member function 'void KNNClassifier<char,double>::drawTrainingData(void) const'
+  c:\users\michael.walczyk\desktop\cinder\apps\knearestneighbors\src\knearestneighborsapp.cpp(55): note: see reference to function template instantiation 'void KNNClassifier<char,double>::drawTrainingData(void) const' being compiled
+  c:\users\michael.walczyk\desktop\cinder\apps\knearestneighbors\src\knearestneighborsapp.cpp(18): note: see reference to class template instantiation 'KNNClassifier<char,double>' being compiled
