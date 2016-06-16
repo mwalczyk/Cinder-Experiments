@@ -1,0 +1,5 @@
+﻿  TextureArrayApp.cpp
+  Unknown compiler version - please run the configure tests and report the results
+c:\users\michael.walczyk\desktop\cinder\apps\texturearray\src\texturearrayapp.cpp(58): warning C4305: 'argument': truncation from 'double' to 'float'
+c:\users\michael.walczyk\desktop\cinder\apps\texturearray\src\texturearrayapp.cpp(71): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  TextureArray.vcxproj -> C:\Users\michael.walczyk\Desktop\Cinder\apps\TextureArray\vc2013\Debug\TextureArray.exe
