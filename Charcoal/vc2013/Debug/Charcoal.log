@@ -1,4 +1,0 @@
-﻿  CharcoalApp.cpp
-  Unknown compiler version - please run the configure tests and report the results
-c:\users\michael.walczyk\desktop\cinder\apps\charcoal\src\charcoalapp.cpp(31): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Charcoal.vcxproj -> C:\Users\michael.walczyk\Desktop\Cinder\apps\Charcoal\vc2013\Debug\Charcoal.exe

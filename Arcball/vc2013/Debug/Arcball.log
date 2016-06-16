@@ -1,4 +1,0 @@
-﻿  ArcballApp.cpp
-  Unknown compiler version - please run the configure tests and report the results
-c:\users\michael.walczyk\desktop\cinder\apps\arcball\src\arcballapp.cpp(66): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  Arcball.vcxproj -> C:\Users\michael.walczyk\Desktop\Cinder\apps\Arcball\vc2013\Debug\Arcball.exe

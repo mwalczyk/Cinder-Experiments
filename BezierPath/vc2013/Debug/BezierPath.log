@@ -1,5 +1,0 @@
-﻿  BezierPathApp.cpp
-  Unknown compiler version - please run the configure tests and report the results
-c:\users\michael.walczyk\desktop\cinder\apps\bezierpath\src\bezierpathapp.cpp(50): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-c:\users\michael.walczyk\desktop\cinder\apps\bezierpath\src\bezierpathapp.cpp(63): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-  BezierPath.vcxproj -> C:\Users\michael.walczyk\Desktop\Cinder\apps\BezierPath\vc2013\Debug\BezierPath.exe
