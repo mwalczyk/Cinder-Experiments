@@ -6,7 +6,7 @@ out vec4 oColor;
 
 in VS_OUT
 {
-  vec4 position;
+  vec3 position;
   vec3 normal;
 } fs_in;
 
@@ -17,5 +17,7 @@ void main()
   // do not make it to the rasterizer
   float d = gl_ClipDistance[0];
 
-  oColor = vec4(fs_in.normal + d + (uLayer / 16.0) * 0.2, 1.0);
+  float l = length(fs_in.position);
+
+  oColor = vec4(fs_in.normal * 0.5 + d + (uLayer / 16.0) * 0.3, l);
 }

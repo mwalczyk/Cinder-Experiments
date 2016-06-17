@@ -62,11 +62,12 @@ void CustomClippingApp::draw()
 	gl::clear(Color(0.15f, 0.15f, 0.17f));
 	gl::setMatrices(mCamera);
 	mWholeSphereBatch->draw();
-
+	
 	const uint8_t kNumSpheres = 16;
 	for (int n = 0; n < kNumSpheres; ++n)
 	{
-		vec3 scaleFactor = vec3(1.0f + static_cast<float>(n) / kNumSpheres);
+		float ratio = static_cast<float>(n) / kNumSpheres;
+		vec3 scaleFactor = vec3(powf(ratio, 3.0) + 1.0f);
 
 		gl::ScopedModelMatrix scpModelMatrix;
 		gl::scale(scaleFactor);
