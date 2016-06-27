@@ -1,0 +1,20 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ComputeBasic", "ComputeBasic.vcxproj", "{206BC012-30CE-4432-8D00-C37915BC75B6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{206BC012-30CE-4432-8D00-C37915BC75B6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{206BC012-30CE-4432-8D00-C37915BC75B6}.Debug|Win32.Build.0 = Debug|Win32
+		{206BC012-30CE-4432-8D00-C37915BC75B6}.Release|Win32.ActiveCfg = Release|Win32
+		{206BC012-30CE-4432-8D00-C37915BC75B6}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
