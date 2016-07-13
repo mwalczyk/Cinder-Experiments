@@ -110,6 +110,7 @@
   <ItemGroup />
   <ItemGroup>
     <ClCompile Include="..\src\FlexTestApp.cpp" />
+    <ClCompile Include="..\src\Scene.cpp" />
     <ClCompile Include="..\src\Solver.cpp" />
   </ItemGroup>
   <ItemGroup>

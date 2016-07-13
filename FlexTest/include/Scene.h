@@ -3,6 +3,8 @@
 #include "cinder/Cinder.h"
 #include "cinder/app/App.h"
 #include "cinder/GeomIo.h"
+#include "cinder/TriMesh.h"
+
 #include <vector>
 
 namespace cinder
@@ -14,15 +16,24 @@ namespace cinder
 
 		class Scene
 		{
+			friend class Solver;
+
 		public:
+			//! factory method for constructing a new scene from a triangle mesh
+			static SceneRef create(const TriMeshRef &aMesh);
+
+			//! factory method for constructing a new scene from a geometry source
+			static SceneRef create(const geom::Source &aSource);
+
+			//! constructs a scene from a triangle mesh
+			Scene(const TriMeshRef &aMesh);
+			
 			//! constructs a scene from a geometry source
 			Scene(const geom::Source &aSource);
-			
+		
 		private:
 			std::vector<vec4> mPositions;
 			std::vector<vec3> mVelocities;
-			std::vector<int> mPhases;
-			std::vector<int> mActiveIndices;
 		};
 	}
 }

@@ -9,6 +9,8 @@ using namespace ci;
 using namespace ci::app;
 using namespace std;
 
+// http://docs.nvidia.com/gameworks/content/gameworkslibrary/physx/flex/_static/api/flex_8h.html#struct_flex_params
+
 class FlexTestApp : public App 
 {
   public:
@@ -23,7 +25,7 @@ class FlexTestApp : public App
 	CameraPersp mCamera;
 	CameraUi mUi;
 
-	const int mMaxParticles = 1000;
+	int mMaxParticles;
 
 	flex::SolverRef mSolver;
 };
@@ -40,14 +42,21 @@ void FlexTestApp::setup()
 	layout.append(geom::CUSTOM_0, 4, 0, 0, 1);
 
 	// create a vbo mesh and append the custom attribute
-	gl::VboMeshRef mesh = gl::VboMesh::create(geom::Sphere().subdivisions(50).radius(0.02f).colors());
+	auto sphere = geom::Cube().subdivisions(40);
+	TriMeshRef triMesh = TriMesh::create(sphere);
+	
+	mMaxParticles = triMesh->getNumVertices();
+	
+	gl::VboMeshRef mesh = gl::VboMesh::create(geom::Sphere().radius(0.02f));
 	mInstanceDataVbo = gl::Vbo::create(GL_ARRAY_BUFFER, mMaxParticles * sizeof(vec4), nullptr, GL_DYNAMIC_DRAW);
 	mesh->appendVbo(layout, mInstanceDataVbo);
 
 	auto glsl = gl::GlslProg::create(loadAsset("shader.vert"), loadAsset("shader.frag"));
+
 	mParticleBatch = gl::Batch::create(mesh, glsl, { {geom::CUSTOM_0, "ciInstancePosition"} });
 
-	mSolver = flex::Solver::create(mMaxParticles);
+	flex::SceneRef scene = flex::Scene::create(triMesh);
+	mSolver = flex::Solver::create(scene);
 }
 
 void FlexTestApp::mouseDown(MouseEvent event)

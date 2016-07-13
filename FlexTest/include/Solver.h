@@ -7,7 +7,6 @@
 #include "cinder/gl/Vbo.h"
 #include "flex.h"
 #include "Scene.h"
-#include <vector>
 
 namespace cinder 
 {
@@ -42,14 +41,21 @@ namespace cinder
 				//! the parameters used internally by the solver
 				Format& params(const FlexParams &aParams) { mParams = aParams; return *this; }
 
+				//! controls whether or not the solver will update
+				Format& active(bool aIsActive) { mIsActive = aIsActive; return *this; }
+
 				float mTimeStep;
 				int mSubSteps;
 				FlexParams mParams;
+				bool mIsActive;
 			};
 
 			//! factory method for constructing a new solver
 			static SolverRef create(uint32_t aMaxParticles, uint32_t aMaxDiffuse = 0, const Format &aFormat = Format());
-			
+
+			//! factory method for constructing a new solver
+			static SolverRef create(const SceneRef &aScene, const Format &aFormat = Format());
+
 			//! returns the default parameter set used to initialize a solver
 			static FlexParams getDefaultParams();
 
@@ -57,7 +63,7 @@ namespace cinder
 			Solver(uint32_t aMaxParticles, uint32_t aMaxDiffuse = 0, const Format &aFormat = Format());
 
 			//! constructs a new solver from the specified solver scene
-			Solver(const SceneRef &aScene);
+			Solver(const SceneRef &aScene, const Format &aFormat = Format());
 
 			//! destroys the solver and cleans up flex resources
 			~Solver();
@@ -78,12 +84,18 @@ namespace cinder
 			void setCollisionPlane(const vec4 &aPlane);
 
 		private:
+			void initFromFormat(const Solver::Format &aFormat);
+			void setupDeviceMemory();
+
 			FlexSolver *mSolver;
+			float mTimeStep;
+			int mSubSteps;
+			FlexParams mParams;
+			bool mIsActive;
 			std::vector<vec4> mPositions;
 			std::vector<vec3> mVelocities;
 			std::vector<int> mPhases;
 			std::vector<int> mActiveIndices;
-			bool mIsActive;
 			uint32_t mMaxParticles;
 			uint32_t mMaxDiffuse;
 			Format mFormat;

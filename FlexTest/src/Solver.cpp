@@ -9,11 +9,17 @@ namespace cinder
 			mTimeStep = 1.0f / 60.0f;
 			mSubSteps = 1;
 			mParams = getDefaultParams();
+			mIsActive = true;
 		}
 
 		SolverRef Solver::create(uint32_t aMaxParticles, uint32_t aMaxDiffuse, const Format &aFormat)
 		{
-			return std::make_shared<Solver>(aMaxParticles, aMaxDiffuse);
+			return std::make_shared<Solver>(aMaxParticles, aMaxDiffuse, aFormat);
+		}
+
+	    SolverRef Solver::create(const SceneRef &aScene, const Format &aFormat)
+		{
+			return std::make_shared<Solver>(aScene, aFormat);
 		}
 
 		FlexParams Solver::getDefaultParams()
@@ -31,7 +37,7 @@ namespace cinder
 			defaultParams.mDynamicFriction = 0.0f;
 			defaultParams.mStaticFriction = 0.0f;
 			defaultParams.mParticleFriction = 0.0f;
-			defaultParams.mRestitution = 0.4f;
+			defaultParams.mRestitution = 0.8f;
 			defaultParams.mAdhesion = 0.0f;
 			defaultParams.mSleepThreshold = 0.0f;
 			defaultParams.mMaxVelocity = FLT_MAX;
@@ -71,11 +77,12 @@ namespace cinder
 			defaultParams.mRelaxationFactor = 1.0f;
 
 			// collision boundaries
-			(vec4&)defaultParams.mPlanes[0] = vec4(0.0f, 1.0f, 0.0f, 2.0f);
-			(vec4&)defaultParams.mPlanes[1] = vec4(1.0f, 0.0f, 0.0f, 2.0f);
-			(vec4&)defaultParams.mPlanes[2] = vec4(-1.0f, 0.0f, 0.0f, 2.0f);
-			(vec4&)defaultParams.mPlanes[3] = vec4(0.0f, 0.0f, 1.0f, 2.0f);
-			(vec4&)defaultParams.mPlanes[4] = vec4(0.0f, 0.0f, -1.0f, 2.0f);
+			const float boxSize = 3.0f;
+			(vec4&)defaultParams.mPlanes[0] = vec4(0.0f, 1.0f, 0.0f, boxSize);
+			(vec4&)defaultParams.mPlanes[1] = vec4(1.0f, 0.0f, 0.0f, boxSize);
+			(vec4&)defaultParams.mPlanes[2] = vec4(-1.0f, 0.0f, 0.0f, boxSize);
+			(vec4&)defaultParams.mPlanes[3] = vec4(0.0f, 0.0f, 1.0f, boxSize);
+			(vec4&)defaultParams.mPlanes[4] = vec4(0.0f, 0.0f, -1.0f, boxSize);
 			defaultParams.mNumPlanes = 5;
 			
 			return defaultParams;
@@ -84,8 +91,7 @@ namespace cinder
 		Solver::Solver(uint32_t aMaxParticles, uint32_t aMaxDiffuse, const Format &aFormat) :
 			mMaxParticles(aMaxParticles),
 			mMaxDiffuse(aMaxDiffuse),
-			mFormat(aFormat),
-			mIsActive(true)
+			mFormat(aFormat)
 		{
 			flexInit();
 
@@ -100,10 +106,39 @@ namespace cinder
 			// velocities
 			mVelocities.resize(mMaxParticles, vec3(0.0, 0.0, 0.0));
 
+			setupDeviceMemory();
+		}
+
+		Solver::Solver(const SceneRef &aScene, const Format &aFormat) :
+			mMaxParticles(aScene->mPositions.size()),
+			mMaxDiffuse(0),
+			mFormat(aFormat)
+		{
+			flexInit();
+
+			// create the flex solver
+			mSolver = flexCreateSolver(mMaxParticles, mMaxDiffuse);
+			flexSetParams(mSolver, &mFormat.mParams);
+
+			mPositions = aScene->mPositions;
+			mVelocities = aScene->mVelocities;
+			setupDeviceMemory();
+		}
+
+		void Solver::initFromFormat(const Solver::Format &aFormat)
+		{
+			mTimeStep = aFormat.mTimeStep;
+			mSubSteps = aFormat.mSubSteps;
+			mParams = aFormat.mParams;
+			mIsActive = aFormat.mIsActive;
+		}
+
+		void Solver::setupDeviceMemory()
+		{
 			// phases
 			int defaultPhase = flexMakePhase(0, eFlexPhaseSelfCollide | eFlexPhaseFluid);
 			mPhases.resize(mMaxParticles, defaultPhase);
-			
+
 			// indices
 			int currIndex = 0;
 			mActiveIndices.resize(mMaxParticles);
@@ -124,7 +159,7 @@ namespace cinder
 		
 		void Solver::update()
 		{
-			if (mIsActive)
+			if (mFormat.mIsActive)
 			{
 				static const float dt = 1.0f / 60.0f;
 				flexUpdateSolver(mSolver, mFormat.mTimeStep, mFormat.mSubSteps, nullptr);
@@ -133,7 +168,7 @@ namespace cinder
 
 		void Solver::enable(bool aActive)
 		{
-			mIsActive = aActive;
+			mFormat.mIsActive = aActive;
 		}
 
 		void Solver::transferToVbo(const gl::VboRef &aVbo, int aNumToTransfer, Solver::SolverAttrib aAttrib) const
