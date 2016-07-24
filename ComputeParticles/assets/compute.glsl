@@ -1,7 +1,6 @@
 #version 430
 
 uniform float ciElapsedSeconds;
-uniform float uNoiseScale;
 
 layout(local_size_x = 128, local_size_y = 1, local_size_z = 1) in;
 
@@ -54,10 +53,16 @@ void main()
   vec3 home = particles[gid].home;
   vec3 dirToHome = normalize(home);
 
-  float n = noise(home.yz + home.x * home.z * 8.0 + ciElapsedSeconds * 0.5); // was a division
+  float n = noise(home.yz + home.x * home.z * 2.0 + ciElapsedSeconds * 0.15);
 
-  vec3 next = home + dirToHome * n * 3.0 + dirToHome;
+  float offset = n * 4.0;
+  float s = sin(ciElapsedSeconds * 1.5 + offset) * 2.5;
+  float c = cos(ciElapsedSeconds * 1.5 + offset) * 1.5;
+
+  vec3 next = home + vec3(s, c, fract(s * c));
+
+  //vec3 next = home + dirToHome * n * 3.0 + dirToHome;
 
   particles[gid].position = next;
-  particles[gid].color = vec3(noise(home.xy) * 0.5 + 0.5, 0.1, 0.2); //0.1, 0.2
+  particles[gid].color = vec3(noise(next.xy * 0.2) * 0.5 + 0.2, 0.1, 0.2);
 }

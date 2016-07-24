@@ -19,5 +19,9 @@ void main()
 
   float l = length(fs_in.position);
 
+#ifdef USE_COLOR
   oColor = vec4(fs_in.normal * 0.5 + d + (uLayer / 16.0) * 0.3, l);
+#else
+  oColor = vec4(vec3(uLayer / 16.0), 1.0);
+#endif
 }

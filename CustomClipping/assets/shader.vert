@@ -54,9 +54,9 @@ float noise(in vec2 p)
 
 void main()
 {
-  float noiseOffset = uLayer * 100.0;
-  float noiseScale = (uLayer / 16.0) * 6.0;
-  vec2 noiseSeed = ciPosition.xy * ciPosition.z * noiseScale + noiseOffset;
+  float noiseOffset = uLayer * 200.0;
+  float noiseScale = (uLayer / 16.0) * 12.0;
+  vec2 noiseSeed = ciPosition.zz * ciPosition.z * noiseScale + noiseOffset;
   float n = noise(ciElapsedSeconds * uNoiseSpeed + noiseSeed);
 
 #ifdef USE_NOISE

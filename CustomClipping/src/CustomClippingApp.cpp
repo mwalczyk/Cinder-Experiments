@@ -67,7 +67,7 @@ void CustomClippingApp::draw()
 	for (int n = 0; n < kNumSpheres; ++n)
 	{
 		float ratio = static_cast<float>(n) / kNumSpheres;
-		vec3 scaleFactor = vec3(powf(ratio, 3.0) + 1.0f);
+		vec3 scaleFactor = vec3(powf(ratio, 5.0) + 1.0f);
 
 		gl::ScopedModelMatrix scpModelMatrix;
 		gl::scale(scaleFactor);
