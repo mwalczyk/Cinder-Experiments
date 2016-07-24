@@ -26,9 +26,11 @@ void main()
   gl_Position = ciModelViewProjection * vec4(particles[vIndex].position, 1.0);
 
   float distFromHome = distance(particles[vIndex].position, particles[vIndex].home);
-  float distShaped = pow(cos(3.14159 * distFromHome /* *0.5 */), 3.0);
+  float distShaped = pow(cos(3.14159 * distFromHome), 3.0);
 
-  gl_PointSize = distShaped * 32.0; // was 32.0
+  // modify the point size based on the particle's distance from "home"
+  gl_PointSize = distShaped * 32.0;
 
+  // modify the color based on the particle's distance from "home"
   vs_out.color = particles[vIndex].color + distShaped * 0.5;
 }

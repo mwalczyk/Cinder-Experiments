@@ -16,6 +16,7 @@ layout(std140, binding = 0) buffer sPositions
     Particle particles[];
 };
 
+// canonical GLSL random number generator
 vec2 hash(in vec2 p)
 {
     p = vec2(dot(p, vec2(12.9898, 78.233)),
@@ -24,11 +25,13 @@ vec2 hash(in vec2 p)
     return -1.0 + 2.0 * fract(sin(p) * 43758.5453123);
 }
 
+// easing equation (used by noise function)
 vec2 quinticHermine(in vec2 x)
 {
     return x * x * x * (x * (x * 6.0 - 15.0) + 10.0);
 }
 
+// gradient noise
 float noise(in vec2 p)
 {
     vec2 i = floor(p);
@@ -55,13 +58,11 @@ void main()
 
   float n = noise(home.yz + home.x * home.z * 2.0 + ciElapsedSeconds * 0.15);
 
+  // move the particle around
   float offset = n * 4.0;
   float s = sin(ciElapsedSeconds * 1.5 + offset) * 2.5;
   float c = cos(ciElapsedSeconds * 1.5 + offset) * 1.5;
-
   vec3 next = home + vec3(s, c, fract(s * c));
-
-  //vec3 next = home + dirToHome * n * 3.0 + dirToHome;
 
   particles[gid].position = next;
   particles[gid].color = vec3(noise(next.xy * 0.2) * 0.5 + 0.2, 0.1, 0.2);
