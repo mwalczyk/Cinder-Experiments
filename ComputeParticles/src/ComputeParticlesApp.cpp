@@ -28,7 +28,7 @@ class ComputeParticlesApp : public App
 	void update() override;
 	void draw() override;
 
-	const size_t kNumParticles = 512000;
+	const size_t kNumParticles = 1024000;
 	const size_t kWorkGroupSize = 128;
 
 	gl::GlslProgRef mComputeProg;
@@ -36,7 +36,6 @@ class ComputeParticlesApp : public App
 	gl::VaoRef mRenderVao;
 	gl::VboRef mRenderVbo;
 	gl::SsboRef mSsboPositions;
-	gl::Texture2dRef mSpriteTexture;
 
 	CameraPersp mCamera;
 	CameraUi mCameraUi;
@@ -44,8 +43,9 @@ class ComputeParticlesApp : public App
 
 void ComputeParticlesApp::setup()
 {
-	gl::enableDepth();
 	gl::enableAlphaBlending();
+
+	// we want to be able to manipulate the point size on a per-particle basis inside of our shader
 	glEnable(GL_PROGRAM_POINT_SIZE);
 
 	// setup shader programs
@@ -58,19 +58,20 @@ void ComputeParticlesApp::setup()
 	for (size_t i = 0; i < kNumParticles; ++i)
 	{
 		vec3 rPosition = randVec3();
-		Particle rParticle;
-		rParticle.position = rPosition;
-		rParticle.home = rPosition;
-		rParticle.color = vec3(1.0f);
 
-		particles.emplace_back(rParticle);
+		Particle rParticle;
+		rParticle.position = rPosition;		// the current position of the particle (the compute shader will manipulate this)
+		rParticle.home = rPosition;			// the home position of the particle (the compute shader will not manipulate this)
+		rParticle.color = vec3(1.0f);		// the color of the particle (currently unused)
+
+		particles.push_back(rParticle);
 	}
 	
-	// setup the shader storage buffer object to hold our initial particle positions
+	// setup the shader storage buffer object to hold our particle structs
 	mSsboPositions = gl::Ssbo::create(sizeof(Particle) * particles.size(), particles.data(), GL_STATIC_DRAW);
 	mSsboPositions->bindBase(0);
 
-	// setup a vbo to hold indices which we will use to index into the ssbo
+	// setup a vbo to hold indices which we will use to index into the ssbo inside of our vertex shader
 	GLuint curr = 0;
 	vector<GLuint> indices(kNumParticles);
 	std::generate(indices.begin(), indices.end(), [&curr]() { return curr++; });
@@ -82,9 +83,6 @@ void ComputeParticlesApp::setup()
 	gl::ScopedBuffer scpBuffer(mRenderVbo);
 	gl::enableVertexAttribArray(0);
 	gl::vertexAttribIPointer(0, 1, GL_UNSIGNED_INT, sizeof(GLuint), nullptr);
-
-	// load the texture
-	mSpriteTexture = gl::Texture2d::create(loadImage(loadAsset("particle.png")), gl::Texture2d::Format().internalFormat(GL_RGBA));
 
 	// setup the camera for viewing the scene
 	mCamera.lookAt(vec3(0.0f, 0.0f, -10.0f), vec3(0.0f));
@@ -105,24 +103,28 @@ void ComputeParticlesApp::mouseDrag(MouseEvent event)
 void ComputeParticlesApp::update()
 {
 	gl::ScopedGlslProg scpGlslProg(mComputeProg);
-	mComputeProg->uniform("uNoiseScale", lmap(static_cast<float>(getMousePos().x), 0.0f, static_cast<float>(getWindowWidth()), 1.0f, 12.0f));
 	gl::setDefaultShaderVars();
+
+	// this command actually runs the compute shader
 	gl::dispatchCompute(kNumParticles / kWorkGroupSize, 1, 1);
+
+	// we set up a memory barrier here because we need the compute shader
+	// to finish before we can safely use the ssbo for rendering
 	gl::memoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
 }
 
 void ComputeParticlesApp::draw()
 {
-	gl::clear(Color(0.12f, 0.12f, 0.14f)); 
+	gl::clear(Color(0.06f, 0.06f, 0.08f));
 	gl::setMatrices(mCamera);
 
-	gl::ScopedGlslProg scpGlslProg(mRenderProg);
-	gl::ScopedTextureBind scpTextureBind(mSpriteTexture, 0);
+	// render points
+	gl::ScopedGlslProg scpGlslProg(mRenderProg); 
 	gl::ScopedVao scpVao(mRenderVao);
 	gl::setDefaultShaderVars();
 	gl::drawArrays(GL_POINTS, 0, kNumParticles);
 }
 
-CINDER_APP(ComputeParticlesApp, RendererGl(RendererGl::Options().msaa(16)), [](App::Settings *settings) {
+CINDER_APP(ComputeParticlesApp, RendererGl(RendererGl::Options().msaa(8)), [](App::Settings *settings) {
 	settings->setWindowSize(512, 512);
 })
