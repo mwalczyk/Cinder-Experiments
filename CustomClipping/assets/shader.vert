@@ -55,7 +55,7 @@ float noise(in vec2 p)
 void main()
 {
   float noiseOffset = uLayer * 100.0;
-  float noiseScale = (uLayer / 16.0) * 6.0;
+  float noiseScale = pow(uLayer / 16.0, 0.5) * 2.0;
   vec2 noiseSeed = ciPosition.xy * ciPosition.z * noiseScale + noiseOffset;
   float n = noise(ciElapsedSeconds * uNoiseSpeed + noiseSeed);
 
@@ -64,10 +64,10 @@ void main()
 #else
   gl_ClipDistance[0] = length(ciPosition.xyz / ciPosition.w - uClipSphere.xyz) - uClipSphere.w;
 #endif
-  vec3 dp = ciPosition.xyz + ciNormal * n * 0.1;
+
+  vec3 dp = ciPosition.xyz + ciNormal * n;
 
   vs_out.position = dp;
   vs_out.normal = ciNormalMatrix * ciNormal;
-
   gl_Position = ciModelViewProjection * vec4(dp, 1.0);
 }

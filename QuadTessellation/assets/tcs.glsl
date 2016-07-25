@@ -15,6 +15,8 @@ out TCS_OUT
   vec2 texcoord;
 } tcs_out[];
 
+// varyings declared with the "patch" qualifier will be constant
+// across the entire surface of the patch
 patch out vec3 tcsPatchColor;
 
 void main()
@@ -32,6 +34,5 @@ void main()
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
   tcs_out[gl_InvocationID].texcoord = tcs_in[gl_InvocationID].texcoord;
-
   tcsPatchColor = vec3(1.0, 0.0, 0.0);
 }

@@ -16,6 +16,6 @@ void main()
 #ifdef USE_PATCH_COLOR
   oColor = vec4(tesPatchColor, 1.0);
 #else
-  oColor = vec4(fs_in.texcoord, 1.0, fs_in.position.y);
+  oColor = vec4(fs_in.texcoord, fs_in.position.y * 0.5 + 0.5, 1.0);
 #endif
 }

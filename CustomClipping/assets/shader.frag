@@ -16,8 +16,9 @@ void main()
   // it will be a positive, since all vertices with negative clip distances
   // do not make it to the rasterizer
   float d = gl_ClipDistance[0];
-
   float l = length(fs_in.position);
 
-  oColor = vec4(fs_in.normal * 0.5 + d + (uLayer / 16.0) * 0.3, l);
+  vec3 colorFromAttrib = vec3(fs_in.position.rg * 0.5, d);
+
+  oColor = vec4(colorFromAttrib + d + (uLayer / 16.0) * 0.5, 1.0);
 }

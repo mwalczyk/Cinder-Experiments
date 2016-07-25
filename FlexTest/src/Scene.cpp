@@ -25,6 +25,11 @@ namespace cinder
 			}
 
 			mVelocities = aMesh->getNormals();
+
+			for (size_t i = 0; i < mVelocities.size(); ++i)
+			{
+				mVelocities.at(i) += randVec3() * 5.0f;
+			}
 		}
 	}
 }

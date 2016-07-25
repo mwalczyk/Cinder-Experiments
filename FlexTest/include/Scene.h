@@ -4,6 +4,7 @@
 #include "cinder/app/App.h"
 #include "cinder/GeomIo.h"
 #include "cinder/TriMesh.h"
+#include "cinder/Rand.h"
 
 #include <vector>
 
@@ -16,8 +17,6 @@ namespace cinder
 
 		class Scene
 		{
-			friend class Solver;
-
 		public:
 			//! factory method for constructing a new scene from a triangle mesh
 			static SceneRef create(const TriMeshRef &aMesh);
@@ -31,9 +30,11 @@ namespace cinder
 			//! constructs a scene from a geometry source
 			Scene(const geom::Source &aSource);
 		
-		private:
+		protected:
 			std::vector<vec4> mPositions;
 			std::vector<vec3> mVelocities;
+
+			friend class Solver;
 		};
 	}
 }

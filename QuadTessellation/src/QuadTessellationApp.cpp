@@ -20,10 +20,14 @@ class QuadTessellationApp : public App
 
 	CameraPersp mCamera;
 	CameraUi mCameraUi;
+
+	bool mShowWireframe;
 };
 
 void QuadTessellationApp::setup()
 {
+	gl::enableDepth();
+
 	auto format = gl::GlslProg::Format().vertex(loadAsset("vert.glsl"))
 		.tessellationCtrl(loadAsset("tcs.glsl"))
 		.tessellationEval(loadAsset("tes.glsl"))
@@ -46,15 +50,28 @@ void QuadTessellationApp::setup()
 	vec2 dInnerLevel{ 5.0f };
 	gl::patchParameterfv(GL_PATCH_DEFAULT_INNER_LEVEL, value_ptr(dOuterLevel));
 
+	mShowWireframe = false;
+
 	// custom lambda that will fire whenever the mouse moves: update shader uniforms
 	getWindow()->getSignalMouseMove().connect([&](MouseEvent event)
 	{	
 		float tessLevelInner = lmap(static_cast<float>(event.getPos().x), 0.0f, static_cast<float>(getWindowWidth()), 1.0f, 100.0f);
 		float tessLevelOuter = lmap(static_cast<float>(event.getPos().x), 0.0f, static_cast<float>(getWindowWidth()), 15.0f, 45.0f);
-		float noiseIntensity = lmap(static_cast<float>(event.getPos().y), 0.0f, static_cast<float>(getWindowHeight()), 1.0f, 16.0f);
+		float noiseIntensity = lmap(static_cast<float>(event.getPos().y), 0.0f, static_cast<float>(getWindowHeight()), 1.0f, 8.0f);
 		mTessellationProg->uniform("uTessLevelInner", tessLevelInner);
 		mTessellationProg->uniform("uTessLevelOuter", tessLevelOuter);
 		mTessellationProg->uniform("uNoiseIntensity", noiseIntensity);
+	});
+
+	// custom lambda that will fire whenever the space bar is pressed: toggle wireframe
+	getWindow()->getSignalKeyDown().connect([&](KeyEvent event)
+	{
+		if (event.getCode() == KeyEvent::KEY_SPACE)
+		{
+			mShowWireframe = !mShowWireframe;
+			if (mShowWireframe) gl::enableWireframe();
+			else gl::disableWireframe();
+		}
 	});
 }
 
@@ -79,7 +96,6 @@ void QuadTessellationApp::draw()
 
 	gl::ScopedGlslProg scpGlslProg(mTessellationProg);
 	gl::setDefaultShaderVars();
-	gl::enableWireframe();
 	
 	gl::drawArrays(GL_PATCHES, 0, 4);
 }

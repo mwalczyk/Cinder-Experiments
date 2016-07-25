@@ -62,14 +62,18 @@ void main()
   vec4 p2 = mix(gl_in[2].gl_Position, gl_in[3].gl_Position, gl_TessCoord.x);
   vec4 p = mix(p1, p2, gl_TessCoord.y);
 
-  vec3 center = vec3(sin(ciElapsedSeconds), 0.0, cos(ciElapsedSeconds)) * 0.5;
-
   // displacement
-  p.y += noise(vec2(distance(p.xyz, center)) * uNoiseIntensity + ciElapsedSeconds) * 0.25;
+  float t = ciElapsedSeconds;
+  float s = sin(t);
+  float c = cos(t);
+  const float orbitRadius = 0.9;
+  vec3 center = vec3(s, 0.0, c) * orbitRadius;
+  float d = distance(p.xyz, center);
+  p.y += noise(vec2(d) * uNoiseIntensity + ciElapsedSeconds) * 0.5;
 
+  // pass attributes to fragment shader
   tes_out.texcoord = mix(tex1, tex2, gl_TessCoord.y);
   tes_out.position = p.xyz;
-
   tesPatchColor = tcsPatchColor;
 
   gl_Position = ciModelViewProjection * p;

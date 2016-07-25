@@ -9,6 +9,6 @@ out vec4 oColor;
 
 void main()
 {
-  vec3 color = mix(fs_in.color, vec3(0.0, 0.2, 0.9), 0.5);
-  oColor = vec4(color, 1.0);
+  const vec3 water = vec3(0.1, 0.5, 0.58);
+  oColor = vec4(fs_in.color + water, 1.0);
 }
