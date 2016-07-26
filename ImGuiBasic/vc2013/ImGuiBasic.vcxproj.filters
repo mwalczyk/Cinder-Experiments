@@ -1,0 +1,85 @@
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Blocks">
+      <UniqueIdentifier>{E22066C1-D0FA-459C-9681-A17C4D0AD3E9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui">
+      <UniqueIdentifier>{B8B8D0CB-1992-4953-ADF4-BFADA4CBAC33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\include">
+      <UniqueIdentifier>{171DA904-F890-4C14-884C-2D125028329D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\lib">
+      <UniqueIdentifier>{3EA335DA-8D37-4145-91E8-8EBFEFE751AF}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\lib\imgui">
+      <UniqueIdentifier>{0E30DEEA-1D41-4063-A343-E0EE5E15914C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Blocks\ImGui\src">
+      <UniqueIdentifier>{0AE2073F-4DC6-4ADA-A36B-1985709CDB48}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\ImGuiBasicApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ImGuiBasicApp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\CinderImGui.h">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui_user.h">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\include\imgui_user.inl">
+      <Filter>Blocks\ImGui\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imconfig.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_internal.h">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClInclude>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\src\CinderImGui.cpp">
+      <Filter>Blocks\ImGui\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_draw.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\blocks\Cinder-ImGui\lib\imgui\imgui_demo.cpp">
+      <Filter>Blocks\ImGui\lib\imgui</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\include\Resources.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Resources.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>
