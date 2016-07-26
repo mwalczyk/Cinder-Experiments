@@ -24,9 +24,9 @@ class SortCircleSizesApp : public App
 
 	std::function<float(float)> mEasingFcn;
 
-	const size_t kN = 25;
+	const size_t kN = 50;
 	const float kMinR = 1.0f;
-	const float kMaxR = 20.0f;
+	const float kMaxR = 10.0f;
 	const int kPadding = 100;
 };
 
