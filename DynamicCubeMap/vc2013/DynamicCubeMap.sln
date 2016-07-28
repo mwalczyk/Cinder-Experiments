@@ -1,0 +1,20 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DynamicCubeMap", "DynamicCubeMap.vcxproj", "{6C8FF27E-B93E-4FA3-A447-45086C72F377}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{6C8FF27E-B93E-4FA3-A447-45086C72F377}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6C8FF27E-B93E-4FA3-A447-45086C72F377}.Debug|Win32.Build.0 = Debug|Win32
+		{6C8FF27E-B93E-4FA3-A447-45086C72F377}.Release|Win32.ActiveCfg = Release|Win32
+		{6C8FF27E-B93E-4FA3-A447-45086C72F377}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
