@@ -14,6 +14,8 @@ struct Sortable
 	float mRadius;
 	vec2 mHomePos;
 	vec2 mSortPos;
+	Color mColor;
+	int mNumSegments;
 };
 
 class SortInteractiveApp : public App 
@@ -40,8 +42,6 @@ protected:
 void SortInteractiveApp::init()
 {
 	// generate kN random radii
-
-
 	for (size_t i = 0; i < mNumCircles; ++i)
 	{
 		float rX = randFloat(kPadding, getWindowWidth() - kPadding);
@@ -50,26 +50,29 @@ void SortInteractiveApp::init()
 		Sortable s;
 		s.mRadius = randFloat(kMinR, kMaxR);
 		s.mHomePos = s.mSortPos = vec2(rX, rY);
+		s.mColor = Color(CM_HSV, randFloat(), 0.65f, 1.0f);
+		s.mNumSegments = randInt(4, 32);
 
 		mSortables.push_back(s);
 	}
 
-	// sort indices based radius 
-	sort(mSortables.begin(), mSortables.end(), [&](const Sortable &lhs, const Sortable &rhs) {
-		return lhs.mRadius < rhs.mRadius;
-	});
+	// sort indices based on some attribute
+	auto sortOnRadius = [&](const Sortable &lhs, const Sortable &rhs) { return lhs.mRadius < rhs.mRadius; };
+	auto sortOnColor = [&](const Sortable &lhs, const Sortable &rhs) { return rgbToHsv(lhs.mColor).r < rgbToHsv(rhs.mColor).r; };
+	auto sortOnSegments = [&](const Sortable &lhs, const Sortable &rhs) { return lhs.mNumSegments < rhs.mNumSegments; };
 
+	sort(mSortables.begin(), mSortables.end(), sortOnColor);
+
+	// set sorted positions
 	vec2 center = getWindowCenter();
 	const float angleRad = 200.0f;
 	const float angleDiv = (M_PI * 2.0f) / mNumCircles;
-	const float freq = 6.0f;
 	for (size_t i = 0; i < mNumCircles; ++i)
 	{
 		float fi = static_cast<float>(i) / mNumCircles;
-
-		vec2 sorted { 
-			cosf(i * angleDiv * freq) * angleRad * fi + center.x,
-			sinf(i * angleDiv * freq) * angleRad * fi + center.y
+		vec2 sorted = { 
+			cosf(i * angleDiv) * angleRad + center.x,
+			sinf(i * angleDiv) * angleRad + center.y
 		};
 		mSortables.at(i).mSortPos = sorted;
 	}
@@ -78,7 +81,6 @@ void SortInteractiveApp::init()
 void SortInteractiveApp::setup()
 {
 	init();
-
 	mEasingFcn = EaseInOutElastic(3.0f, 2.0f);
 }
 
@@ -96,13 +98,12 @@ void SortInteractiveApp::draw()
 	gl::setMatricesWindow(getWindowSize());
 
 	// draw the circles
-	gl::ScopedColor scpColor(Color::gray(0.15f));
 	double time = mEasingFcn(sin(getElapsedSeconds()));
 	for (const auto &s : mSortables)
 	{
-		
+		gl::ScopedColor scpColor(s.mColor);
 		vec2 curr = mix(s.mHomePos, s.mSortPos, time);
-		gl::drawSolidCircle(curr, s.mRadius);
+		gl::drawSolidCircle(curr, s.mRadius, s.mNumSegments);
 	}
 }
 
