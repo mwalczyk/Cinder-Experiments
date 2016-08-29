@@ -27,7 +27,7 @@ void VectorField::init_format(const Format &t_format)
 
 void VectorField::update_render_batch()
 {	
-	auto arrow_src = ci::geom::Cone().height(0.2f).ratio(0.05f);
+	auto arrow_src = ci::geom::Cone().height(0.4f).ratio(0.05f);
 	auto vbo_mesh_src = ci::gl::VboMesh::create(arrow_src);
 	
 	// load the shader
@@ -101,11 +101,16 @@ void VectorField::draw_vector_field() const
 	m_vector_batch->drawInstanced(num_inst);
 
 	// draw bounding box
-	const ci::vec3 padding{ 0.2f };
+	const ci::vec3 padding{ 0.4f };
 	ci::gl::drawStrokedCube(ci::vec3(0.0f), m_grid_size + padding);
 }
 
 ci::vec3 VectorField::query_field_at(const ci::vec3 &t_point) const
 {
 	return m_vector_function(t_point);
+}
+
+ci::vec3 VectorField::operator()(const ci::vec3 &t_point) const
+{
+	return query_field_at(t_point);
 }

@@ -28,7 +28,7 @@ class ComputeParticlesApp : public App
 	void update() override;
 	void draw() override;
 
-	const size_t kNumParticles = 1024000;
+	const size_t kNumParticles = 50000;
 	const size_t kWorkGroupSize = 128;
 
 	gl::GlslProgRef mComputeProg;

@@ -1,5 +1,6 @@
 #version 430
 
+uniform mat4 ciModelMatrix;
 uniform mat4 ciViewMatrix;
 uniform mat4 ciProjectionMatrix;
 
@@ -17,5 +18,5 @@ void main()
 {
 	vs_out.color = v_instance_color;
 
-	gl_Position = ciProjectionMatrix * ciViewMatrix * v_instance_transform * ciPosition;
+	gl_Position = ciProjectionMatrix * ciViewMatrix * ciModelMatrix * v_instance_transform * ciPosition;
 }

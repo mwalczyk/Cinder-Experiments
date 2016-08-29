@@ -93,7 +93,7 @@ void QuadTessellationApp::draw()
 {
 	gl::clear(Color::gray(0.15f)); 
 	gl::setMatrices(mCamera);
-
+	gl::enableWireframe();
 	gl::ScopedGlslProg scpGlslProg(mTessellationProg);
 	gl::setDefaultShaderVars();
 	

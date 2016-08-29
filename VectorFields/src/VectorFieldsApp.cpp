@@ -31,7 +31,7 @@ void VectorFieldsApp::setup()
 {
 	gl::enableDepth();
 
-	m_camera.lookAt(vec3(0.0f, 0.0f, -5.0f), vec3(0.0f));
+	m_camera.lookAt(vec3(0.0f, 0.0f, -12.0f), vec3(0.0f));
 	m_camera.setPerspective(45.0f, getWindowAspectRatio(), 0.1f, 1000.0f);
 	m_ui = CameraUi(&m_camera, getWindow());
 
@@ -57,6 +57,10 @@ void VectorFieldsApp::draw()
 {
 	gl::clear(); 
 	gl::setMatrices(m_camera);
+
+	gl::ScopedModelMatrix scpModelMatrix;
+	gl::rotate(getElapsedSeconds() * 0.5f, vec3(0.0f, 1.0f, 0.0f));
+	gl::rotate(getElapsedSeconds() * 0.5f, vec3(0.0f, 1.0f, 1.0f));
 	m_vector_field->draw_vector_field();
 }
 

@@ -44,6 +44,7 @@ public:
 
 	void draw_vector_field() const;
 	ci::vec3 query_field_at(const ci::vec3 &t_point) const;
+	ci::vec3 operator()(const ci::vec3 &t_point) const;
 
 private:
 	void init_format(const Format &t_format);
