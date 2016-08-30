@@ -44,14 +44,17 @@ public:
 
 	void draw_vector_field() const;
 	ci::vec3 query_field_at(const ci::vec3 &t_point) const;
+	void update();
 	ci::vec3 operator()(const ci::vec3 &t_point) const;
 
 private:
 	void init_format(const Format &t_format);
-	void update_render_batch();
+	void prepare_render_batch();
 
 	ci::ivec3 m_grid_resolution;
 	ci::vec3 m_grid_size;
 	VectorFunction m_vector_function;
+	ci::gl::VboRef m_vbo_transform_inst;
+	ci::gl::VboRef m_vbo_color_inst;
 	ci::gl::BatchRef m_vector_batch;
 };
