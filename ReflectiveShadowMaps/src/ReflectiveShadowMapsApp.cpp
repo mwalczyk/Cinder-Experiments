@@ -141,8 +141,14 @@ void ReflectiveShadowMapsApp::draw()
 	gl::ScopedTextureBind scpTextureBind2(m_shadow_fbo->getTexture2d(GL_COLOR_ATTACHMENT2), 2);
 	gl::ScopedTextureBind scpTextureBind3(m_shadow_texture, 3);
 
-	m_scene_cube_batch->draw();
-	m_shadow_sphere_batch->draw();
+	{
+		gl::ScopedColor scpColor(Color(1.0f, 0.0f, 0.0f));
+		m_scene_cube_batch->draw();
+	}
+	{
+		gl::ScopedColor scpColor(Color(0.15f, 0.15f, 0.15f));
+		m_scene_sphere_batch->draw();
+	}
 }
 
 CINDER_APP(ReflectiveShadowMapsApp, RendererGl, [](App::Settings *settings) {
