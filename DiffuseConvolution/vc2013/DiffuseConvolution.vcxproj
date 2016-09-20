@@ -109,9 +109,11 @@
   <ItemGroup />
   <ItemGroup />
   <ItemGroup>
+    <ClCompile Include="..\src\Convolution.cpp" />
     <ClCompile Include="..\src\DiffuseConvolutionApp.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\include\Convolution.h" />
     <ClInclude Include="..\include\Resources.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
