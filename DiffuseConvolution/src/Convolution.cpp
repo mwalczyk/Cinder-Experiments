@@ -37,12 +37,12 @@ namespace pbr
 
 		// create six floating-point surfaces from the cubemap
 		ci::Surface32f master_surface(t_image_src, ci::SurfaceConstraintsDefault());
-		ci::Surface32f images[6];
+		ci::Surface32f images[m_num_faces];
 
-		for (uint8_t f = 0; f < 6; ++f)
+		for (uint8_t f = 0; f < m_num_faces; ++f)
 		{
-			m_cubemap_surfaces[f] = ci::Surface32f(face_size.x, face_size.y, master_surface.hasAlpha(), ci::SurfaceConstraints());
-			m_cubemap_surfaces[f].copyFrom(master_surface, face_regions[f].mArea, face_regions[f].mOffset);
+			m_original_surfaces[f] = ci::Surface32f(face_size.x, face_size.y, master_surface.hasAlpha(), ci::SurfaceConstraints());
+			m_original_surfaces[f].copyFrom(master_surface, face_regions[f].mArea, face_regions[f].mOffset);
 			if (face_regions[f].mFlip)
 			{
 				ci::ip::flipVertical(&images[f]);
@@ -196,84 +196,99 @@ namespace pbr
 		return ci::vec3{};
 	}
 
-	void Convolution::convolve_cubemap()
+	void Convolution::convolve_face_threaded(size_t t_face_id, ci::Surface32f &t_filtered_face)
 	{
-		// input and output cubemap dimensions
-		ci::ivec2 original_dims{ m_cubemap_surfaces.front().getSize() };
+		ci::ThreadSetup thread_setup;
+		
+		ci::ivec2 original_dims{ m_original_surfaces.front().getSize() };
 		ci::ivec2 filtered_dims{ original_dims };
-		bool has_alpha = m_cubemap_surfaces.front().hasAlpha();
-		ci::app::console() << "Beginning cubemap convolution | input dimensions: " << original_dims << std::endl;
 
-		// for a horizontal cross, faces are loaded in this order:
-		// +X, -X, +Y, -Y, +Z, -Z
-
-		// each face of the filtered (output) cubemap
-		for (size_t filtered_face_id = 0; filtered_face_id < 1; ++filtered_face_id)
+		// iterate through every pixel of the current filtered (output) face
+		auto output_pixel_iter = t_filtered_face.getIter();
+		while (output_pixel_iter.line())
 		{
-			ci::app::console() << "Beginning convolution of filtered face #" << filtered_face_id << std::endl;
-			m_convolved_face_test = ci::Surface32f{ original_dims.x, original_dims.y, has_alpha };
-	
-			// iterate through every pixel of the current filtered (output) face
-			auto output_pixel_iter = m_convolved_face_test.getIter();
-			while (output_pixel_iter.line())
+			ci::app::console() << "Thread #" << t_face_id << " | Processing row " << output_pixel_iter.y() << " of " << filtered_dims.y << std::endl;
+			while (output_pixel_iter.pixel())
 			{
-				ci::app::console() << "| Processing row " << output_pixel_iter.y() << " of " << original_dims.y << std::endl;
-				while (output_pixel_iter.pixel())
+				ci::vec3 filtered_direction = ci::normalize(get_direction(t_face_id, output_pixel_iter.x(), output_pixel_iter.y(), filtered_dims.x));
+				float total_weight = 0.0f;
+				float weight = 0.0f;
+				ci::vec3 original_direction;
+				ci::vec3 original_face_direction;
+				ci::Color filtered_color;
+
+				// each face of the original (input) cubemap
+				for (size_t original_face_id = 0; original_face_id < m_num_faces; ++original_face_id)
 				{
-					ci::vec3 filtered_direction = ci::normalize(get_direction(filtered_face_id, output_pixel_iter.x(), output_pixel_iter.y(), filtered_dims.x));
-					float total_weight = 0.0f;
-					float weight = 0.0f;
-					ci::vec3 original_direction;
-					ci::vec3 original_face_direction;
-					ci::Color filtered_color;
+					original_face_direction = ci::normalize(get_direction(original_face_id, 1, 1, 3));
 
-					// each face of the original (input) cubemap
-					for (size_t original_face_id = 0; original_face_id < 6; ++original_face_id)
+					// iterate through every pixel of the current original (input) face
+					auto input_pixel_iter = m_original_surfaces[original_face_id].getIter();
+					while (input_pixel_iter.line())
 					{
-						original_face_direction = ci::normalize(get_direction(original_face_id, 1, 1, 3));
-						//ci::app::console() << "----Examining face #" << original_face_id << " of the original cubemap." << std::endl;
-						//ci::app::console() << "----Face normal: " << original_face_direction << std::endl;
-
-						// iterate through every pixel of the current original (input) face
-						auto input_pixel_iter = m_cubemap_surfaces[original_face_id].getIter();
-						while (input_pixel_iter.line())
+						while (input_pixel_iter.pixel())
 						{
-							while (input_pixel_iter.pixel())
-							{
-								// direction to the current texel (light source)
-								original_direction = get_direction(original_face_id, input_pixel_iter.x(), input_pixel_iter.y(), original_dims.x);
+							// direction to the current texel (light source)
+							original_direction = get_direction(original_face_id, input_pixel_iter.x(), input_pixel_iter.y(), original_dims.x);
 
-								// more distant texels contribute less to the final radiance
-								weight = 1.0f / glm::pow(ci::length(original_direction), 2.0f);
+							// more distant texels contribute less to the final radiance
+							weight = 1.0f / glm::pow(ci::length(original_direction), 2.0f);
 
-								original_direction = ci::normalize(original_direction);
+							original_direction = ci::normalize(original_direction);
 
-								// texels that are tilted away from the face normal contribute less to the final radiance
-								weight *= ci::dot(original_face_direction, original_direction);
+							// texels that are tilted away from the face normal contribute less to the final radiance
+							weight *= ci::dot(original_face_direction, original_direction);
 
-								// direction filter for diffuse illumination
-								weight *= std::max(0.0f, glm::dot(filtered_direction, original_direction));
+							// direction filter for diffuse illumination
+							weight *= std::max(0.0f, glm::dot(filtered_direction, original_direction));
 
-								// normalize against the maximum illumination
-								total_weight += weight;
+							// normalize against the maximum illumination
+							total_weight += weight;
 
-								// add the illumination
-								float r = input_pixel_iter.r();
-								float g = input_pixel_iter.g();
-								float b = input_pixel_iter.b();
-								filtered_color += weight * ci::Colorf{ r, g, b };
-							}
+							// add the illumination
+							float r = input_pixel_iter.r();
+							float g = input_pixel_iter.g();
+							float b = input_pixel_iter.b();
+							filtered_color += weight * ci::Colorf{ r, g, b };
 						}
 					}
-
-					// set the pixel color of the filtered cubemap to filtered_color / total_weight
-					ci::Colorf final_color = filtered_color / total_weight;
-					output_pixel_iter.r() = final_color.r;
-					output_pixel_iter.g() = final_color.g;
-					output_pixel_iter.b() = final_color.b;
 				}
+
+				// set the pixel color of the filtered cubemap to filtered_color / total_weight
+				ci::Colorf final_color = filtered_color / total_weight;
+				output_pixel_iter.r() = final_color.r;
+				output_pixel_iter.g() = final_color.g;
+				output_pixel_iter.b() = final_color.b;
 			}
 		}
-		
+
+		// increment the atomic counter
+		m_thread_counter.fetch_add(1, std::memory_order_relaxed);
+	}
+
+	void Convolution::convolve_cubemap()
+	{
+		// for a horizontal cross, faces are loaded in this order:
+		// +X, -X, +Y, -Y, +Z, -Z
+		// input and output cubemap dimensions
+		bool has_alpha = m_original_surfaces.front().hasAlpha();
+		ci::ivec2 original_size = m_original_surfaces.front().getSize();
+
+		for (size_t filtered_face_id = 0; filtered_face_id < m_num_faces; ++filtered_face_id)
+		{
+			ci::app::console() << "Launching thread #" << filtered_face_id << std::endl;
+
+			// construct a new, empty surface with the same dimensions and number of channels as the original cubemap face
+			m_convolved_surfaces[filtered_face_id] = ci::Surface32f{ original_size.x, original_size.y, has_alpha };
+
+			// launch a separate thread to convole this face
+			m_convolution_threads[filtered_face_id] = std::thread(&Convolution::convolve_face_threaded, this, filtered_face_id, std::ref(m_convolved_surfaces[filtered_face_id]));
+		}
+
+		// detach all threads from the main thread
+		for (size_t thread_index = 0; thread_index < m_num_faces; ++thread_index)
+		{
+			m_convolution_threads[thread_index].detach();
+		}
 	}
 } // namespace pbr
