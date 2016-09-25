@@ -64,9 +64,12 @@ void DiffuseConvolutionApp::update()
 			m_convolved_face_textures[i] = gl::Texture2d::create(m_diffuse_convolution->get_convolved_surfaces()[i]);
 		}
 
-		ImageSourceRef *images = (ImageSourceRef*)m_diffuse_convolution->get_convolved_surfaces().data();
+		ImageSourceRef images[6];
+		for (size_t i = 0; i < 6; ++i)
+		{
+			images[i] = (ImageSourceRef)m_diffuse_convolution->get_convolved_surfaces()[i];
+		}
 		m_convolved_cubemap = gl::TextureCubeMap::create(images);
-
 		m_transferred_to_texture = true;
 	}
 }
